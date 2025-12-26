@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizable - Make Learning Lovable</title>
+    <style>
+        /* --- RESET & VARIABLES --- */
+        :root {
+            --primary: #8b5cf6; /* Soft Purple */
+            --secondary: #14b8a6; /* Teal */
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --error: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --shadow: 0 10px 30px -10px rgba(139, 92, 246, 0.3);
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --cursor-size: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+            cursor: default; 
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 3rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 1.5rem 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -0.05em;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .btn-login {
+            font-weight: 600;
+            color: var(--dark);
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 80px; /* space for header */
+            transition: opacity 0.5s ease;
+        }
+
+        .hero.hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn Up 1s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 3rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -10px rgba(20, 184, 166, 0.4);
+        }
+
+        .btn-primary.full-width {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-small {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            margin-left: 0.25rem;
+        }
+        
+        .btn-edit { background: #e0f2fe; color: #0284c7; }
+        .btn-delete { background: #fee2e2; color: #dc2626; }
+        .btn-block { background: #fef3c7; color: #d97706; }
+        .btn-verify { background: #dcfce7; color: #166534; }
+        .btn-edit:hover, .btn-delete:hover, .btn-block:hover, .btn-verify:hover { opacity: 0.8; }
+
+        /* --- DASHBOARDS (SHARED STYLES) --- */
+        .dashboard {
+            display: none;
+            padding-top: 120px;
+            padding-bottom: 4rem;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .filter-pill {
+            padding: 0.5rem 1.25rem;
+            background: white;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .filter-pill.active {
+            background: var(--dark);
+            color: white;
+        }
+
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .dash-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .dash-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .dash-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--gradient);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        /* --- ADMIN TABS --- */
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+        
+        .admin-tab-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+        }
+        
+        .admin-tab-btn.active {
+            color: var(--primary);
+        }
+        
+        .admin-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem; /* Match parent padding */
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .admin-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .admin-section.active {
+            display: block;
+        }
+
+        /* --- ANNOUNCEMENTS --- */
+        .announcement-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .announcement-icon {
+            font-size: 1.5rem;
+        }
+
+        /* --- TABLES --- */
+        .table-container {
+            margin-top: 2rem; 
+            background: white; 
+            border-radius: 1.5rem; 
+            padding: 2rem; 
+            box-shadow: var(--card-shadow);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 1rem;
+            min-width: 600px;
+        }
+        
+        th {
+            text-align: left; 
+            border-bottom: 2px solid #f1f5f9;
+            padding: 1rem; 
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem; 
+            border-radius: 1rem; 
+            font-size: 0.85rem; 
+            font-weight: 600;
+        }
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-blocked { background: #fee2e2; color: #dc2626; }
+        .status-pending { background: #fef9c3; color: #854d0e; }
+        .status-verified { background: #e0f2fe; color: #0284c7; }
+
+        /* --- QUIZ INTERFACE (HIDDEN) --- */
+        .quiz-interface {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--light);
+            z-index: 2000;
+            padding: 2rem;
+            overflow-y: auto;
+            animation: slideUp 0.4s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .quiz-interface.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 1rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 2rem;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            padding: 1.25rem;
+            text-align: left;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #f3e8ff;
+        }
+
+        .option-btn.selected {
+            background: var(--dark);
+            color: white;
+            border-color: var(--dark);
+        }
+        
+        .option-btn.correct {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .option-btn.wrong {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+
+        /* --- MODAL (Shared) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 1.5rem;
+            width: 90%;
+            max-width: 500px; 
+            max-height: 90vh; 
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+            transform: translateY(30px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--dark);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- FORM STYLES --- */
+        .role-selector {
+            display: flex;
+            gap: 0.5rem;
+            background: #f1f5f9;
+            padding: 0.25rem;
+            border-radius: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            background: transparent;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .role-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+            color: var(--dark);
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary);
+        }
+
+        /* --- QUESTION CREATION BLOCKS --- */
+        .question-block {
+            background: #f8fafc;
+            padding: 1.2rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+            position: relative;
+        }
+
+        .question-block h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .options-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .remove-q-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+        }
+
+        .modal-footer {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .modal-footer a {
+            color: var(--primary);
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .modal-footer a:hover {
+            color: var(--secondary);
+        }
+
+        .form-message {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            min-height: 1.4em;
+            font-weight: 600;
+        }
+
+        .form-message.error { color: var(--error); }
+        .form-message.success { color: var(--success); }
+
+        /* --- PASSWORD CRITERIA STYLES --- */
+        .password-requirements {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+            opacity: 0;
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--gray);
+            padding: 0 0.5rem;
+        }
+
+        .password-requirements.visible {
+            max-height: 120px;
+            opacity: 1;
+            margin-bottom: 1rem;
+        }
+
+        .requirements-title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            display: block;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+            transition: color 0.2s;
+        }
+
+        .requirement-item.valid {
+            color: var(--secondary);
+        }
+
+        .requirement-circle {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            transition: background-color 0.2s;
+        }
+
+        .requirement-item.valid .requirement-circle {
+            background-color: var(--secondary);
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot {
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            background: var(--gradient);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.7;
+            mix-blend-mode: multiply; 
+            transform: translate(-50%, -50%); /* Center on coordinates */
+            transition: width 0.2s, height 0.2s, opacity 0.2s;
+            /* Start hidden until mouse moves */
+            display: none; 
+        }
+
+        /* Hover state for cursor */
+        .cursor-dot.hovered {
+            width: 48px;
+            height: 48px;
+            opacity: 0.4;
+        }
+
+        /* Click state for cursor */
+        .cursor-dot.active {
+            width: 16px;
+            height: 16px;
+            opacity: 0.9;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 968px) {
+            h1 { font-size: 2.5rem; }
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 3rem;
+            }
+            .hero-content {
+                margin: 0 auto;
+            }
+            .dash-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            nav { padding: 0 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .btn-primary { width: 100%; text-align: center; }
+            .modal-content { padding: 2rem; }
+            .quiz-container { padding: 1.5rem; }
+            .table-container { padding: 1rem; }
+            th, td { padding: 0.75rem; font-size: 0.9rem; }
+            .options-group { grid-template-columns: 1fr; }
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- ACCESSIBILITY & DEVICE CHECKS --- */
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot { display: none !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cursor-dot { display: none !important; }
+            .hero-content { animation: none; opacity: 1; transform: none; }
+            .modal-content { transition: none; }
+            .dashboard, .quiz-interface { animation: none; opacity: 1; }
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Animated Cursor -->
+    <div id="cursor" class="cursor-dot"></div>
+
+    <!-- Header -->
+    <header id="mainHeader">
+        <div class="container">
+            <nav>
+                <a href="#" class="logo" data-cursor="hover" onclick="logout()">
+                    QZ<span>.</span>
+                </a>
+                <a href="#" class="btn-login trigger-login" id="authBtn" data-cursor="hover">Log in</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Hero -->
+    <main id="landingPage">
+        <section class="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <!-- Center Text -->
+                    <div class="hero-content">
+                        <h1>Master any subject, one quiz at a time.</h1>
+                        <p>Quizable turns your boring study notes into fun, bite-sized challenges. Join thousands of learners making education lovable again.</p>
+                        <a href="#" class="btn-primary trigger-login" data-cursor="hover">Start Quizzing Free</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- STUDENT DASHBOARD -->
+    <section id="studentDashboard" class="dashboard">
+        <div class="container">
+            <!-- Announcements -->
+            <div id="studentAnnouncements"></div>
+
+            <div class="dash-header">
+                <div>
+                    <h2>Hello, Student 👋</h2>
+                    <p style="margin-bottom: 0;">Ready to learn?</p>
+                </div>
+            </div>
+
+            <!-- Subject Filters -->
+            <div class="filters">
+                <div class="filter-pill active" data-filter="all" data-cursor="hover">All</div>
+                <div class="filter-pill" data-filter="c" data-cursor="hover">C Programming</div>
+                <div class="filter-pill" data-filter="java" data-cursor="hover">Java</div>
+                <div class="filter-pill" data-filter="html" data-cursor="hover">HTML</div>
+            </div>
+
+            <div class="dash-grid" id="quizGrid">
+                <!-- Dynamic Quiz Cards will be inserted here by JS -->
+            </div>
+
+            <!-- Logout Button -->
+            <div style="margin-top: 4rem; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 2rem;">
+                <button onclick="logout()" class="btn-secondary" style="border-color: var(--error); color: var(--error);" data-cursor="hover">Log Out</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADMIN DASHBOARD -->
+    <section id="adminDashboard" class="dashboard">
+        <div class="container">
+            <div class="dash-header">
+                <div>
+                    <h2>Admin Panel 🛡️</h2>
+                    <p style="margin-bottom: 0;">Control center for Quizable.</p>
+                </div>
+            </div>
+            
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" onclick="switchAdminTab('overview')">Overview</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('users')">Users</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('quizzes')">Quizzes</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('announcements')">Announcements</button>
+            </div>
+
+            <!-- Overview Section -->
+            <div id="admin-overview" class="admin-section active">
+                <div class="dash-grid">
+                    <div class="dash-card">
+                        <h3>Total Users</h3>
+                        <div class="stat-number" id="totalUsersCount" style="color: var(--primary);">0</div>
+                    </div>
+                    <div class="dash-card">
+                        <h3>Active Quizzes</h3>
+                        <div class="stat-number" id="adminQuizCount" style="color: var(--secondary);">0</div>
+                    </div>
+                    <div class="dash-card">
+                        <h3>Users Joined Today</h3>
+                        <div class="stat-number" id="platformGrowth" style="color: #f59e0b;">0</div>
+                        <p style="margin:0; font-size: 0.9rem;">New registrations</p>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h3>Top Performing Students 🏆</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Email</th>
+                                <th>Avg. Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topStudentsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="admin-users" class="admin-section">
+                <h3>User Management</h3>
+                <div class="table-container" style="margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User (Email)</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quizzes Section -->
+            <div id="admin-quizzes" class="admin-section">
+                <h3>Quiz Moderation</h3>
+                <div class="table-container" style="margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Subject</th>
+                                <th>Questions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminQuizTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Announcements Section -->
+            <div id="admin-announcements" class="admin-section">
+                <h3>Post Announcement</h3>
+                <div style="background: white; padding: 2rem; border-radius: 1.5rem; margin-top: 1rem; box-shadow: var(--card-shadow);">
+                    <form id="announcementForm">
+                        <div class="form-group">
+                            <textarea class="form-textarea" id="announcementText" placeholder="Write your notice here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary" data-cursor="hover">Post Notice</button>
+                    </form>
+                </div>
+                
+                <h3 style="margin-top: 2rem;">Active Announcements</h3>
+                <div id="activeAnnouncementsList" style="margin-top: 1rem;"></div>
+            </div>
+            
+            <!-- Logout Button -->
+             <div style="margin-top: 4rem; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 2rem;">
+                <button onclick="logout()" class="btn-secondary" style="border-color: var(--error); color: var(--error);" data-cursor="hover">Log Out</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- INSTRUCTOR DASHBOARD -->
+    <section id="instructorDashboard" class="dashboard">
+        <div class="container">
+            <!-- Announcements -->
+            <div id="instructorAnnouncements"></div>
+
+            <div class="dash-header">
+                <div>
+                    <h2>Instructor Studio 🍎</h2>
+                    <p style="margin-bottom: 0;">Create and manage your quizzes.</p>
+                </div>
+                <button class="btn-primary" id="openCreateQuizBtn" data-cursor="hover">+ New Quiz</button>
+            </div>
+            
+            <div class="dash-grid">
+                <!-- Stat Card 1 -->
+                <div class="dash-card" data-cursor="hover">
+                    <h3>My Quizzes</h3>
+                    <div class="stat-number" id="instQuizCount" style="color: var(--primary);">0</div>
+                    <p style="margin:0; font-size: 0.9rem;">Created by you</p>
+                </div>
+
+                <!-- Stat Card 2 -->
+                <div class="dash-card" data-cursor="hover">
+                    <h3>Student Attempts</h3>
+                    <div class="stat-number" id="instAttemptsCount" style="color: var(--secondary);">0</div>
+                    <p style="margin:0; font-size: 0.9rem;">On your quizzes</p>
+                </div>
+
+                <!-- Stat Card 3 -->
+                <div class="dash-card" data-cursor="hover">
+                    <h3>Avg. Score</h3>
+                    <div class="stat-number" id="instAvgScore" style="color: #f59e0b;">0%</div>
+                    <p style="margin:0; font-size: 0.9rem;">On your quizzes</p>
+                </div>
+            </div>
+
+            <!-- Quiz List Table -->
+             <div class="table-container">
+                <h3>My Quizzes</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Quiz Title</th>
+                            <th>Subject</th>
+                            <th>Questions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="instructorTableBody">
+                        <!-- Dynamic Quiz Rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Student Results Table -->
+            <div class="table-container">
+                <h3>Recent Student Results (Your Quizzes)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Email</th>
+                            <th>Quiz Title</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentResultsBody">
+                        <!-- Dynamic Result Rows -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Logout Button -->
+             <div style="margin-top: 4rem; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 2rem;">
+                <button onclick="logout()" class="btn-secondary" style="border-color: var(--error); color: var(--error);" data-cursor="hover">Log Out</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Create Quiz Modal (Instructor) -->
+    <div class="modal-overlay" id="createQuizModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeCreateModal" data-cursor="hover">&times;</button>
+            <h2 class="modal-title">Create New Quiz</h2>
+            <form id="createQuizForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="newQuizTitle" placeholder="Quiz Title" required>
+                </div>
+                <div class="form-group">
+                    <select class="form-select" id="newQuizSubject" required>
+                        <option value="" disabled selected>Select Subject</option>
+                        <option value="c">C Programming</option>
+                        <option value="java">Java</option>
+                        <option value="html">HTML</option>
+                    </select>
+                </div>
+                
+                <!-- Dynamic Questions Container -->
+                <div id="questionsContainer">
+                    <!-- Question blocks added here -->
+                </div>
+
+                <button type="button" id="addQuestionBtn" class="btn-secondary full-width" style="margin-bottom: 1.5rem; border-style: dashed;">+ Add Question</button>
+
+                <button type="submit" class="btn-primary full-width" data-cursor="hover">Publish Quiz</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Interactive Quiz Interface (Hidden) -->
+    <section id="quizInterface" class="quiz-interface">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <div>
+                    <span style="color: var(--gray); font-size: 0.9rem;">Topic</span>
+                    <h3 id="quizTopic" style="margin:0; color: var(--primary);">General Science</h3>
+                </div>
+                <div style="text-align: right;">
+                    <span style="color: var(--gray); font-size: 0.9rem;">Score</span>
+                    <h3 id="quizScore" style="margin:0; color: var(--secondary);">0</h3>
+                </div>
+            </div>
+
+            <div id="questionArea">
+                <div class="question-text" id="questionText">What is the powerhouse of the cell?</div>
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Options go here -->
+                </div>
+            </div>
+
+            <div id="resultArea" style="display: none; text-align: center;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Quiz Complete! 🎉</h2>
+                <p>You scored <span id="finalScore" style="color: var(--primary); font-weight: 800;">0</span> out of <span id="totalScore" style="font-weight: 800;">0</span></p>
+                <button class="btn-primary" onclick="closeQuiz()" data-cursor="hover">Back to Dashboard</button>
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; justify-content: space-between;">
+                <button onclick="closeQuiz()" style="border:none; background:none; color: var(--gray); font-weight:600; cursor:pointer;" data-cursor="hover">Quit Quiz</button>
+                <div style="font-size: 0.9rem; color: var(--gray);">Question <span id="qIndex">1</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal" data-cursor="hover">&times;</button>
+            <h2 class="modal-title" id="modalTitle">Welcome Back</h2>
+            <p style="margin-bottom: 1.5rem; font-size: 0.95rem;" id="modalSubtitle">Enter your details to access your quizzes.</p>
+            
+            <!-- Feedback Message Area -->
+            <div id="formFeedback" class="form-message"></div>
+
+            <form id="authForm">
+                <!-- Role Selector -->
+                <div class="role-selector">
+                    <button type="button" class="role-btn active" data-role="student" data-cursor="hover">Student</button>
+                    <button type="button" class="role-btn" data-role="instructor" data-cursor="hover">Instructor</button>
+                    <button type="button" class="role-btn" data-role="admin" data-cursor="hover">Admin</button>
+                </div>
+
+                <div class="form-group">
+                    <input type="email" class="form-input" id="emailInput" placeholder="Email address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-input" id="passwordInput" placeholder="Password" required>
+                </div>
+                
+                <!-- Password Criteria List -->
+                <div class="password-requirements" id="passwordCriteria">
+                    <span class="requirements-title">Password must contain:</span>
+                    <div class="requirement-item" id="req-length">
+                        <div class="requirement-circle"></div> 8 or more characters
+                    </div>
+                    <div class="requirement-item" id="req-mix">
+                        <div class="requirement-circle"></div> Mix of letters, numbers & symbols
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary full-width" id="submitBtn" data-cursor="hover">Log In</button>
+            </form>
+            <div class="modal-footer" id="modalFooter">
+                Don't have an account? <a href="#" id="toggleAuth" data-cursor="hover">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- GLOBAL VARIABLES ---
+        let logout, closeQuiz, deleteQuiz, editQuiz;
+        // Admin functions
+        let switchAdminTab, deleteUser, toggleBlockUser, verifyInstructor, deleteQuizAdmin, deleteNotice;
+        let quizResults = []; 
+        let editingQuizId = null; 
+        let currentUserEmail = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CURSOR LOGIC ---
+            const cursor = document.getElementById('cursor');
+            let mouseX = 0, mouseY = 0;
+            let cursorX = 0, cursorY = 0;
+            let isMoving = false;
+
+            const isTouchDevice = matchMedia('(hover: none) and (pointer: coarse)').matches;
+            const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (!isTouchDevice && !prefersReducedMotion) {
+                document.addEventListener('mousemove', (e) => {
+                    if (!isMoving) {
+                        cursor.style.display = 'block';
+                        isMoving = true;
+                        cursorX = e.clientX;
+                        cursorY = e.clientY;
+                    }
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                });
+
+                const animateCursor = () => {
+                    const ease = 0.15;
+                    cursorX += (mouseX - cursorX) * ease;
+                    cursorY += (mouseY - cursorY) * ease;
+                    cursor.style.transform = `translate3d(${cursorX - 12}px, ${cursorY - 12}px, 0)`;
+                    requestAnimationFrame(animateCursor);
+                };
+                animateCursor();
+
+                document.body.addEventListener('mouseover', (e) => {
+                    if (e.target.closest('a, button, .dash-card, .option-btn, .filter-pill, .form-select, .form-input, .form-textarea, [data-cursor="hover"]')) {
+                        cursor.classList.add('hovered');
+                    }
+                });
+                document.body.addEventListener('mouseout', (e) => {
+                    if (e.target.closest('a, button, .dash-card, .option-btn, .filter-pill, .form-select, .form-input, .form-textarea, [data-cursor="hover"]')) {
+                        cursor.classList.remove('hovered');
+                    }
+                });
+
+                document.addEventListener('mousedown', () => cursor.classList.add('active'));
+                document.addEventListener('mouseup', () => cursor.classList.remove('active'));
+            }
+
+            // --- DOM Elements Declaration ---
+            const studentDashboard = document.getElementById('studentDashboard');
+            const adminDashboard = document.getElementById('adminDashboard');
+            const instructorDashboard = document.getElementById('instructorDashboard');
+            const quizGrid = document.getElementById('quizGrid');
+            const filterPills = document.querySelectorAll('.filter-pill');
+            
+            // Admin Panel Elements
+            const userTableBody = document.getElementById('userTableBody');
+            const totalUsersCount = document.getElementById('totalUsersCount');
+            const adminQuizCount = document.getElementById('adminQuizCount');
+            const adminQuizTableBody = document.getElementById('adminQuizTableBody');
+            const topStudentsBody = document.getElementById('topStudentsBody');
+            const platformGrowth = document.getElementById('platformGrowth');
+            const announcementForm = document.getElementById('announcementForm');
+            const announcementText = document.getElementById('announcementText');
+            const activeAnnouncementsList = document.getElementById('activeAnnouncementsList');
+            const studentAnnouncements = document.getElementById('studentAnnouncements');
+            const instructorAnnouncements = document.getElementById('instructorAnnouncements');
+
+            const instructorTableBody = document.getElementById('instructorTableBody');
+            const studentResultsBody = document.getElementById('studentResultsBody');
+            const landingPage = document.getElementById('landingPage');
+            const authBtn = document.getElementById('authBtn');
+            const createQuizTitleElem = document.querySelector('#createQuizModal .modal-title'); 
+            const submitQuizBtn = document.querySelector('#createQuizForm button[type="submit"]');
+
+            // --- QUIZ DATA MANAGEMENT ---
+            const defaultQuizzes = [
+                {
+                    id: 1,
+                    title: "C Basics",
+                    subject: "c",
+                    createdBy: 'system',
+                    questions: [
+                        { q: "Who is the father of C language?", options: ["Steve Jobs", "James Gosling", "Dennis Ritchie", "Rasmus Lerdorf"], ans: 2 },
+                        { q: "Which symbol is used to terminate a statement?", options: [":", ";", ".", ","], ans: 1 },
+                        { q: "Size of int data type is usually?", options: ["2 bytes", "4 bytes", "1 byte", "8 bytes"], ans: 1 }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Java OOP",
+                    subject: "java",
+                    createdBy: 'system',
+                    questions: [
+                        { q: "Which keyword is used to create an object?", options: ["class", "struct", "new", "object"], ans: 2 },
+                        { q: "Java is a ___ language?", options: ["Low-level", "Object-Oriented", "Assembly", "Scripting"], ans: 1 }
+                    ]
+                }
+            ];
+
+            let quizzes = [];
+
+            // --- Render Functions ---
+            const renderDashboard = (filter = 'all') => {
+                quizGrid.innerHTML = '';
+                const filtered = filter === 'all' ? quizzes : quizzes.filter(q => q.subject === filter);
+
+                if (filtered.length === 0) {
+                    quizGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--gray);">No quizzes available in this category.</p>';
+                    return;
+                }
+
+                filtered.forEach(quiz => {
+                    const card = document.createElement('div');
+                    card.className = 'dash-card';
+                    card.setAttribute('data-cursor', 'hover');
+                    card.innerHTML = `
+                        <div class="quiz-meta">
+                            <span>${quiz.subject.toUpperCase()}</span>
+                            <span>${quiz.questions.length} Questions</span>
+                        </div>
+                        <h3>${quiz.title}</h3>
+                        <p style="margin-bottom: auto; font-size: 0.9rem;">Test your knowledge on this topic.</p>
+                        <button class="btn-primary" style="margin-top: 1.5rem; padding: 0.5rem 1.5rem; font-size: 0.9rem;" onclick="startQuiz(${quiz.id})">Start Quiz</button>
+                    `;
+                    quizGrid.appendChild(card);
+                });
+            };
+
+            // --- ADMIN PANEL LOGIC ---
+            switchAdminTab = window.switchAdminTab = (tabId) => {
+                document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+                document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
+                document.getElementById('admin-' + tabId).classList.add('active');
+            };
+
+            const renderAdminPanel = () => {
+                const users = JSON.parse(localStorage.getItem('quizable_users') || '{}');
+                const userEntries = Object.entries(users);
+                
+                // 1. Overview Stats
+                totalUsersCount.textContent = userEntries.length;
+                adminQuizCount.textContent = quizzes.length;
+
+                // Calculate Users Joined Today
+                const today = new Date().toLocaleDateString();
+                const newUsersToday = userEntries.filter(([email, user]) => {
+                    if(user.dateJoined) {
+                        return new Date(user.dateJoined).toLocaleDateString() === today;
+                    }
+                    return false;
+                }).length;
+                platformGrowth.textContent = newUsersToday;
+
+                // 2. Users Table
+                userTableBody.innerHTML = '';
+                if (userEntries.length === 0) {
+                    userTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No users registered.</td></tr>';
+                } else {
+                    userEntries.forEach(([email, data]) => {
+                        const role = typeof data === 'object' ? data.role : 'student';
+                        const status = data.status || 'active';
+                        const isVerified = data.verified || false;
+                        
+                        let actionsHtml = '';
+
+                        // CRITICAL FIX: Prevent Admin from blocking/deleting Admins (Self or Others)
+                        if (role === 'admin') {
+                            actionsHtml = '<span style="color:var(--gray); font-size:0.85rem; font-style:italic;">Main Account</span>';
+                        } else {
+                            if(status === 'blocked') {
+                                actionsHtml += `<button class="btn-small btn-verify" onclick="toggleBlockUser('${email}')">Unblock</button>`;
+                            } else {
+                                actionsHtml += `<button class="btn-small btn-block" onclick="toggleBlockUser('${email}')">Block</button>`;
+                            }
+                            if(role === 'instructor' && !isVerified) {
+                                actionsHtml += `<button class="btn-small btn-verify" onclick="verifyInstructor('${email}')">Verify</button>`;
+                            }
+                            actionsHtml += `<button class="btn-small btn-delete" onclick="deleteUser('${email}')">Delete</button>`;
+                        }
+
+                        const statusBadge = status === 'blocked' 
+                            ? `<span class="status-badge status-blocked">Blocked</span>`
+                            : (role === 'instructor' && !isVerified ? `<span class="status-badge status-pending">Pending</span>` : `<span class="status-badge status-active">Active</span>`);
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-weight: 600;">${email}</td>
+                            <td style="text-transform: capitalize;">${role} ${isVerified ? '✅' : ''}</td>
+                            <td>${statusBadge}</td>
+                            <td>${actionsHtml}</td>
+                        `;
+                        userTableBody.appendChild(tr);
+                    });
+                }
+
+                // 3. Quizzes Table (Moderation)
+                adminQuizTableBody.innerHTML = '';
+                if(quizzes.length === 0) {
+                    adminQuizTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No quizzes.</td></tr>';
+                } else {
+                    quizzes.forEach(quiz => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-weight: 600;">${quiz.title}</td>
+                            <td style="text-transform: uppercase;">${quiz.subject}</td>
+                            <td>${quiz.questions.length}</td>
+                            <td><button class="btn-small btn-delete" onclick="deleteQuizAdmin(${quiz.id})">Delete</button></td>
+                        `;
+                        adminQuizTableBody.appendChild(tr);
+                    });
+                }
+
+                // 4. Analytics (Top Students)
+                const storedResults = JSON.parse(localStorage.getItem('quizable_results') || '[]');
+                const studentScores = {}; 
+                
+                storedResults.forEach(r => {
+                    if(!r.student) return;
+                    if(!studentScores[r.student]) studentScores[r.student] = { total: 0, count: 0 };
+                    studentScores[r.student].total += (r.score / r.total) * 100;
+                    studentScores[r.student].count++;
+                });
+
+                const sortedStudents = Object.entries(studentScores)
+                    .map(([email, data]) => ({ email, avg: Math.round(data.total / data.count) }))
+                    .sort((a, b) => b.avg - a.avg)
+                    .slice(0, 3); // Top 3
+
+                topStudentsBody.innerHTML = '';
+                if(sortedStudents.length === 0) {
+                    topStudentsBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">No data yet.</td></tr>';
+                } else {
+                    sortedStudents.forEach(s => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${s.email}</td><td>${s.avg}%</td>`;
+                        topStudentsBody.appendChild(tr);
+                    });
+                }
+
+                // 5. Announcements List
+                renderAnnouncements('admin');
+            };
+
+            // Admin Actions
+            deleteUser = window.deleteUser = (email) => {
+                if(!confirm(`Delete user ${email}?`)) return;
+                const users = JSON.parse(localStorage.getItem('quizable_users') || '{}');
+                delete users[email];
+                localStorage.setItem('quizable_users', JSON.stringify(users));
+                renderAdminPanel();
+            };
+
+            toggleBlockUser = window.toggleBlockUser = (email) => {
+                const users = JSON.parse(localStorage.getItem('quizable_users') || '{}');
+                if(users[email]) {
+                    users[email].status = users[email].status === 'blocked' ? 'active' : 'blocked';
+                    localStorage.setItem('quizable_users', JSON.stringify(users));
+                    renderAdminPanel();
+                }
+            };
+
+            verifyInstructor = window.verifyInstructor = (email) => {
+                const users = JSON.parse(localStorage.getItem('quizable_users') || '{}');
+                if(users[email]) {
+                    users[email].verified = true;
+                    localStorage.setItem('quizable_users', JSON.stringify(users));
+                    renderAdminPanel();
+                }
+            };
+
+            deleteQuizAdmin = window.deleteQuizAdmin = (id) => {
+                if(!confirm("Delete this quiz permanently?")) return;
+                quizzes = quizzes.filter(q => q.id !== id);
+                saveQuizzes(); 
+            };
+
+            // --- ANNOUNCEMENTS LOGIC ---
+            announcementForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const text = announcementText.value;
+                const notices = JSON.parse(localStorage.getItem('quizable_notices') || '[]');
+                
+                notices.push({
+                    id: Date.now(),
+                    text: text,
+                    date: new Date().toLocaleDateString()
+                });
+                
+                localStorage.setItem('quizable_notices', JSON.stringify(notices));
+                announcementText.value = '';
+                alert("Announcement Posted!");
+                renderAnnouncements('admin');
+            });
+
+            const renderAnnouncements = (view) => {
+                const notices = JSON.parse(localStorage.getItem('quizable_notices') || '[]');
+                let container;
+                
+                if(view === 'admin') container = activeAnnouncementsList;
+                else if(view === 'student') container = studentAnnouncements;
+                else if(view === 'instructor') container = instructorAnnouncements;
+
+                container.innerHTML = '';
+                
+                if(notices.length === 0) {
+                    if(view === 'admin') container.innerHTML = '<p style="color:var(--gray);">No active announcements.</p>';
+                    return; 
+                }
+
+                notices.reverse().forEach(notice => {
+                    const div = document.createElement('div');
+                    div.className = 'announcement-box';
+                    
+                    // Determine which button to show (Delete for Admin, Dismiss for Others)
+                    const actionBtn = view === 'admin' 
+                        ? `<button onclick="deleteNotice(${notice.id})" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer; font-size:1.2rem;" title="Delete">&times;</button>`
+                        : `<button onclick="this.parentElement.remove()" style="margin-left:auto; color:#b45309; border:none; background:none; cursor:pointer; font-size:1.2rem;" title="Dismiss">&times;</button>`;
+
+                    div.innerHTML = `
+                        <div class="announcement-icon">📢</div>
+                        <div style="flex: 1;">
+                            <p style="margin:0; font-weight:600;">${notice.text}</p>
+                            <span style="font-size:0.8rem; opacity:0.8;">Posted: ${notice.date}</span>
+                        </div>
+                        ${actionBtn}
+                    `;
+                    container.appendChild(div);
+                });
+            };
+
+            deleteNotice = window.deleteNotice = (id) => {
+                let notices = JSON.parse(localStorage.getItem('quizable_notices') || '[]');
+                notices = notices.filter(n => n.id !== id);
+                localStorage.setItem('quizable_notices', JSON.stringify(notices));
+                renderAnnouncements('admin');
+            };
+
+            // --- INSTRUCTOR PANEL ---
+            const renderInstructorPanel = () => {
+                instructorTableBody.innerHTML = '';
+                studentResultsBody.innerHTML = ''; 
+                
+                // Get stored results
+                const storedResults = JSON.parse(localStorage.getItem('quizable_results') || '[]');
+                
+                // Filter quizzes created by THIS instructor
+                const myQuizzes = quizzes.filter(q => q.createdBy === currentUserEmail);
+                
+                // Filter results only for quizzes created by THIS instructor
+                const myQuizIds = myQuizzes.map(q => q.id);
+                const myResults = storedResults.filter(r => myQuizIds.includes(r.quizId));
+
+                const totalAttempts = myResults.length;
+                let totalPercent = 0;
+                myResults.forEach(r => {
+                    totalPercent += (r.score / r.total) * 100;
+                });
+                const avgScore = totalAttempts > 0 ? Math.round(totalPercent / totalAttempts) : 0;
+
+                document.getElementById('instQuizCount').textContent = myQuizzes.length;
+                document.getElementById('instAttemptsCount').textContent = totalAttempts;
+                document.getElementById('instAvgScore').textContent = `${avgScore}%`;
+                
+                if (myQuizzes.length === 0) {
+                    instructorTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--gray);">No quizzes created. Add one!</td></tr>';
+                } else {
+                    myQuizzes.forEach(quiz => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-weight: 600;">${quiz.title}</td>
+                            <td style="text-transform: uppercase;">${quiz.subject}</td>
+                            <td>${quiz.questions.length}</td>
+                            <td>
+                                <button class="btn-small btn-edit" data-cursor="hover" onclick="editQuiz(${quiz.id})">Edit</button>
+                                <button class="btn-small btn-delete" data-cursor="hover" onclick="deleteQuiz(${quiz.id})">Delete</button>
+                            </td>
+                        `;
+                        instructorTableBody.appendChild(tr);
+                    });
+                }
+
+                if (myResults.length === 0) {
+                    studentResultsBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--gray);">No results yet.</td></tr>';
+                } else {
+                    // Show latest results for MY quizzes
+                    myResults.reverse().slice(0, 10).forEach(result => {
+                        const quiz = quizzes.find(q => q.id === result.quizId);
+                        const quizTitle = quiz ? quiz.title : 'Unknown Quiz';
+                        const studentName = result.student || 'Anonymous';
+                        const date = result.date ? new Date(result.date).toLocaleDateString() : 'N/A';
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-weight: 600;">${studentName}</td>
+                            <td>${quizTitle}</td>
+                            <td><span style="font-weight:700; color:var(--primary);">${result.score}</span> / ${result.total}</td>
+                            <td style="font-size: 0.85rem; color: var(--gray);">${date}</td>
+                        `;
+                        studentResultsBody.appendChild(tr);
+                    });
+                }
+                
+                renderAnnouncements('instructor');
+            };
+
+            const saveQuizzes = () => {
+                localStorage.setItem('quizable_quizzes', JSON.stringify(quizzes));
+                if(studentDashboard && studentDashboard.classList.contains('active')) renderDashboard();
+                if(adminDashboard && adminDashboard.classList.contains('active')) { renderAdminPanel(); }
+                if(instructorDashboard && instructorDashboard.classList.contains('active')) renderInstructorPanel();
+            };
+
+           // --- NEW: FETCH QUIZZES FROM SERVER ---
+const loadQuizzes = async () => {
+    try {
+        // 1. Ask the server for quizzes
+        const response = await fetch('http://localhost:5003/api/quizzes');
+        
+        // 2. Save them to our variable
+        quizzes = await response.json();
+        
+        // 3. Refresh the screen if a dashboard is open
+        if(studentDashboard && studentDashboard.classList.contains('active')) renderDashboard();
+        if(adminDashboard && adminDashboard.classList.contains('active')) renderAdminPanel();
+        if(instructorDashboard && instructorDashboard.classList.contains('active')) renderInstructorPanel();
+        
+    } catch (error) {
+        console.error("Failed to load quizzes:", error);
+        // Optional: Show empty state if server is down
+        quizzes = []; 
+    }
+};
+
+// Call it immediately when the page loads
+loadQuizzes();
+
+            loadQuizzes();
+
+            deleteQuiz = window.deleteQuiz = (id) => {
+                if(!confirm("Are you sure?")) return;
+                quizzes = quizzes.filter(q => q.id !== id);
+                saveQuizzes();
+            };
+
+            // --- CREATE / EDIT QUIZ LOGIC ---
+            const createQuizModal = document.getElementById('createQuizModal');
+            const openCreateQuizBtn = document.getElementById('openCreateQuizBtn');
+            const closeCreateModal = document.getElementById('closeCreateModal');
+            const createQuizForm = document.getElementById('createQuizForm');
+            const questionsContainer = document.getElementById('questionsContainer');
+            const addQuestionBtn = document.getElementById('addQuestionBtn');
+
+            const addQuestionBlock = (num, data = null) => {
+                const block = document.createElement('div');
+                block.className = 'question-block';
+                block.innerHTML = `
+                    <h4>Question ${num}</h4>
+                    <button type="button" class="btn-small btn-delete remove-q-btn">Remove</button>
+                    <div class="form-group">
+                        <input type="text" class="form-input q-text" placeholder="Enter question text" required>
+                    </div>
+                    <div class="options-group">
+                        <input type="text" class="form-input q-opt" placeholder="Option A" required>
+                        <input type="text" class="form-input q-opt" placeholder="Option B" required>
+                        <input type="text" class="form-input q-opt" placeholder="Option C" required>
+                        <input type="text" class="form-input q-opt" placeholder="Option D" required>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-select q-ans" required>
+                            <option value="" disabled selected>Select Correct Answer</option>
+                            <option value="0">Option A</option>
+                            <option value="1">Option B</option>
+                            <option value="2">Option C</option>
+                            <option value="3">Option D</option>
+                        </select>
+                    </div>
+                `;
+                questionsContainer.appendChild(block);
+                
+                if (data) {
+                    block.querySelector('.q-text').value = data.q;
+                    const opts = block.querySelectorAll('.q-opt');
+                    opts[0].value = data.options[0];
+                    opts[1].value = data.options[1];
+                    opts[2].value = data.options[2];
+                    opts[3].value = data.options[3];
+                    block.querySelector('.q-ans').value = data.ans;
+                }
+                
+                block.querySelector('.remove-q-btn').addEventListener('click', () => {
+                    block.remove();
+                });
+            };
+
+            editQuiz = window.editQuiz = (id) => {
+                const quiz = quizzes.find(q => q.id === id);
+                if (!quiz) return;
+
+                editingQuizId = id; 
+                createQuizTitleElem.textContent = "Edit Quiz";
+                submitQuizBtn.textContent = "Update Quiz";
+                
+                document.getElementById('newQuizTitle').value = quiz.title;
+                document.getElementById('newQuizSubject').value = quiz.subject;
+                
+                questionsContainer.innerHTML = '';
+                quiz.questions.forEach((q, index) => {
+                    addQuestionBlock(index + 1, q);
+                });
+
+                createQuizModal.classList.add('active');
+            };
+
+            openCreateQuizBtn.addEventListener('click', () => {
+                editingQuizId = null;
+                createQuizTitleElem.textContent = "Create New Quiz";
+                submitQuizBtn.textContent = "Create Quiz";
+                
+                createQuizModal.classList.add('active');
+                createQuizForm.reset();
+                questionsContainer.innerHTML = '';
+                addQuestionBlock(1);
+            });
+            
+            closeCreateModal.addEventListener('click', () => createQuizModal.classList.remove('active'));
+
+            addQuestionBtn.addEventListener('click', () => {
+                const count = questionsContainer.children.length + 1;
+                addQuestionBlock(count);
+            });
+
+          // --- NEW: SEND QUIZ TO SERVER ---
+createQuizForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = document.getElementById('newQuizTitle').value;
+    const subject = document.getElementById('newQuizSubject').value;
+
+    // 1. Gather questions from the form
+    const qBlocks = document.querySelectorAll('.question-block');
+    const newQuestions = [];
+
+    qBlocks.forEach(block => {
+        const qText = block.querySelector('.q-text').value;
+        const opts = Array.from(block.querySelectorAll('.q-opt')).map(i => i.value);
+        const ans = parseInt(block.querySelector('.q-ans').value);
+
+        newQuestions.push({ q: qText, options: opts, ans: ans });
+    });
+
+    if (newQuestions.length === 0) {
+        alert("Please add at least one question!");
+        return;
+    }
+
+    // 2. Prepare data to send to MongoDB
+    const quizData = {
+        title: title,
+        subject: subject,
+        questions: newQuestions,
+        createdBy: currentUserEmail // Uses the email of the logged-in instructor
+    };
+
+    const submitBtn = document.querySelector('#createQuizForm button[type="submit"]');
+    submitBtn.textContent = "Saving...";
+
+    try {
+        // 3. SEND TO BACKEND
+        const response = await fetch('http://localhost:5003/api/quizzes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(quizData)
+        });
+
+        if (response.ok) {
+            alert("Quiz Published to Cloud! ☁️");
+            createQuizForm.reset();
+            document.getElementById('createQuizModal').classList.remove('active');
+            submitBtn.textContent = "Publish Quiz";
+
+            // 4. Reload the list to show the new quiz instantly
+            loadQuizzes(); 
+        } else {
+            const errData = await response.json();
+            alert("Error saving quiz: " + (errData.error || "Unknown error"));
+            submitBtn.textContent = "Publish Quiz";
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Server is offline. Is 'npm run dev' running?");
+        submitBtn.textContent = "Publish Quiz";
+    }
+});
+
+            // --- QUIZ GAME LOGIC ---
+            const quizInterface = document.getElementById('quizInterface');
+            const questionText = document.getElementById('questionText');
+            const optionsGrid = document.getElementById('optionsGrid');
+            const quizScoreEl = document.getElementById('quizScore');
+            const quizTopic = document.getElementById('quizTopic');
+            const qIndexEl = document.getElementById('qIndex');
+            const questionArea = document.getElementById('questionArea');
+            const resultArea = document.getElementById('resultArea');
+            const finalScoreEl = document.getElementById('finalScore');
+            const totalScoreEl = document.getElementById('totalScore');
+
+            let currentQuiz = null;
+            let currentQIndex = 0;
+            let score = 0;
+
+            window.startQuiz = (id) => {
+                currentQuiz = quizzes.find(q => q.id === id);
+                if (!currentQuiz) return;
+
+                currentQIndex = 0;
+                score = 0;
+                quizScoreEl.textContent = 0;
+                quizTopic.textContent = currentQuiz.title;
+                
+                questionArea.style.display = 'block';
+                resultArea.style.display = 'none';
+                
+                quizInterface.classList.add('active');
+                loadQuestion();
+            };
+
+            const loadQuestion = () => {
+                const q = currentQuiz.questions[currentQIndex];
+                qIndexEl.textContent = `${currentQIndex + 1} / ${currentQuiz.questions.length}`;
+                questionText.textContent = q.q;
+                optionsGrid.innerHTML = '';
+
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = opt;
+                    btn.setAttribute('data-cursor', 'hover');
+                    btn.onclick = () => checkAnswer(idx, btn);
+                    optionsGrid.appendChild(btn);
+                });
+            };
+
+            const checkAnswer = (selectedIdx, btn) => {
+                const buttons = optionsGrid.querySelectorAll('button');
+                buttons.forEach(b => b.disabled = true);
+
+                const correctIdx = currentQuiz.questions[currentQIndex].ans;
+
+                if (selectedIdx === correctIdx) {
+                    btn.classList.add('correct');
+                    score++;
+                    quizScoreEl.textContent = score;
+                } else {
+                    btn.classList.add('wrong');
+                    buttons[correctIdx].classList.add('correct');
+                }
+
+                setTimeout(() => {
+                    currentQIndex++;
+                    if (currentQIndex < currentQuiz.questions.length) {
+                        loadQuestion();
+                    } else {
+                        showResult();
+                    }
+                }, 1000);
+            };
+
+           // --- NEW: SAVE SCORE TO DATABASE ---
+const showResult = async () => {
+    // 1. Update the UI (Show the score on screen)
+    questionArea.style.display = 'none';
+    resultArea.style.display = 'block';
+    finalScoreEl.textContent = score;
+    totalScoreEl.textContent = currentQuiz.questions.length;
+
+    // 2. Prepare Data for Backend
+    const resultData = {
+        studentEmail: currentUserEmail,
+        // MongoDB uses '_id', but your old local quizzes used 'id'. 
+        // We check for both to be safe.
+        quizId: currentQuiz._id || currentQuiz.id, 
+        quizTitle: currentQuiz.title,
+        score: score,
+        total: currentQuiz.questions.length
+    };
+
+    try {
+        // 3. Send to Backend
+        const response = await fetch('http://localhost:5003/api/results', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(resultData)
+        });
+
+        if (response.ok) {
+            console.log("Score saved to cloud! ☁️");
+        } else {
+            console.error("Failed to save score");
+        }
+    } catch (error) {
+        console.error("Connection error:", error);
+    }
+};
+
+            // --- MODAL & AUTH LOGIC ---
+            const modal = document.getElementById('loginModal');
+            const closeBtn = document.getElementById('closeModal');
+            const triggerBtns = document.querySelectorAll('.trigger-login');
+            const authForm = document.getElementById('authForm');
+            const toggleAuthBtn = document.getElementById('toggleAuth');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSubtitle = document.getElementById('modalSubtitle');
+            const submitBtn = document.getElementById('submitBtn');
+            const modalFooter = document.getElementById('modalFooter');
+            const formFeedback = document.getElementById('formFeedback');
+            const passwordCriteria = document.getElementById('passwordCriteria');
+            const emailInput = document.getElementById('emailInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const reqLength = document.getElementById('req-length');
+            const reqMix = document.getElementById('req-mix');
+
+            const roleBtns = document.querySelectorAll('.role-btn');
+            let selectedRole = 'student'; 
+            
+            roleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    roleBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedRole = btn.getAttribute('data-role');
+                });
+            });
+
+            let isSignUp = false;
+
+            const setMessage = (msg, type) => {
+                formFeedback.textContent = msg;
+                formFeedback.className = `form-message ${type}`;
+                setTimeout(() => {
+                    if (formFeedback.className.includes(type)) {
+                        formFeedback.textContent = '';
+                        formFeedback.className = 'form-message';
+                    }
+                }, 3000);
+            };
+
+            const openModal = (e) => {
+                e.preventDefault();
+                modal.classList.add('active');
+                formFeedback.textContent = '';
+            };
+
+            const closeModalFn = () => {
+                modal.classList.remove('active');
+                if(isSignUp) toggleMode();
+                authForm.reset();
+                formFeedback.textContent = '';
+                roleBtns.forEach(b => b.classList.remove('active'));
+                document.querySelector('[data-role="student"]').classList.add('active');
+                selectedRole = 'student';
+            };
+
+            const toggleMode = (e) => {
+                if(e) e.preventDefault();
+                isSignUp = !isSignUp;
+                formFeedback.textContent = '';
+                authForm.reset();
+
+                if (isSignUp) {
+                    modalTitle.textContent = "Create Account";
+                    modalSubtitle.textContent = "Start your learning journey today.";
+                    submitBtn.textContent = "Sign Up";
+                    modalFooter.innerHTML = `Already have an account? <a href="#" id="toggleAuth" data-cursor="hover">Log in</a>`;
+                    passwordCriteria.classList.add('visible');
+                } else {
+                    modalTitle.textContent = "Welcome Back";
+                    modalSubtitle.textContent = "Enter your details to access your quizzes.";
+                    submitBtn.textContent = "Log In";
+                    modalFooter.innerHTML = `Don't have an account? <a href="#" id="toggleAuth" data-cursor="hover">Sign up</a>`;
+                    passwordCriteria.classList.remove('visible');
+                }
+                document.getElementById('toggleAuth').addEventListener('click', toggleMode);
+            };
+
+            passwordInput.addEventListener('input', (e) => {
+                if (!isSignUp) return;
+                const val = e.target.value;
+                const isValidLength = val.length >= 8;
+                const hasLetter = /[a-zA-Z]/.test(val);
+                const hasNumberOrSymbol = /[0-9!@#$%^&*(),.?":{}|<>]/.test(val);
+                const isValidMix = hasLetter && hasNumberOrSymbol;
+
+                if (isValidLength) reqLength.classList.add('valid');
+                else reqLength.classList.remove('valid');
+
+                if (isValidMix) reqMix.classList.add('valid');
+                else reqMix.classList.remove('valid');
+            });
+
+            const showDashboard = (role, email) => {
+                landingPage.style.display = 'none';
+                authBtn.style.display = 'none'; 
+                
+                if (role === 'student') {
+                    studentDashboard.classList.add('active');
+                    renderAnnouncements('student');
+                    renderDashboard();
+                } else if (role === 'admin') {
+                    adminDashboard.classList.add('active');
+                    renderAdminPanel();
+                } else if (role === 'instructor') {
+                    instructorDashboard.classList.add('active');
+                    renderInstructorPanel();
+                }
+            };
+
+            logout = window.logout = () => {
+                studentDashboard.classList.remove('active');
+                adminDashboard.classList.remove('active');
+                instructorDashboard.classList.remove('active');
+                landingPage.style.display = 'block';
+                authBtn.style.display = 'block';
+                currentUserEmail = null;
+                alert("Logged out successfully!");
+            };
+
+          authForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    // --- 1. FRONTEND VALIDATION (Keep this for better user experience) ---
+    if (isSignUp) {
+        const isValidLength = password.length >= 8;
+        const hasLetter = /[a-zA-Z]/.test(password);
+        const hasNumberOrSymbol = /[0-9!@#$%^&*(),.?":{}|<>]/.test(password);
+
+        if (!isValidLength || !(hasLetter && hasNumberOrSymbol)) {
+            setMessage("Password: 8+ chars, mix of letters & numbers/symbols.", "error");
+            return; // Stop! Don't send to server if password is weak
+        }
+    }
+
+    // --- 2. CONNECT TO BACKEND ---
+    setMessage("Connecting to server...", "status");
+
+    const endpoint = isSignUp ? '/register' : '/login';
+    const apiUrl = `http://localhost:5003/api/auth${endpoint}`;
+    
+    const bodyData = {
+        email: email,
+        password: password,
+        role: selectedRole // This comes from your role buttons
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // SUCCESS
+            if (isSignUp) {
+                setMessage("Account created! Please log in.", "success");
+                setTimeout(() => toggleMode(), 1500); // Switch to login view automatically
+            } else {
+                setMessage("Login Successful!", "success");
+                
+                // Save the "Passport" (Token) the server gave us
+                localStorage.setItem('token', data.token); 
+                localStorage.setItem('userEmail', data.user.email);
+                localStorage.setItem('userRole', data.user.role);
+
+                currentUserEmail = data.user.email;
+                
+                setTimeout(() => {
+                    closeModalFn();
+                    showDashboard(data.user.role, data.user.email);
+                }, 1000);
+            }
+        } else {
+            // SERVER REJECTED (e.g., "User already exists" or "Wrong password")
+            setMessage(data.msg || "Error occurred", "error");
+        }
+    } catch (error) {
+        console.error("Connection Error:", error);
+        setMessage("Server is offline. Run 'npm run dev' in backend.", "error");
+    }
+});
+
+            triggerBtns.forEach(btn => btn.addEventListener('click', openModal));
+            if (closeBtn) closeBtn.addEventListener('click', closeModalFn);
+            if (toggleAuthBtn) toggleAuthBtn.addEventListener('click', toggleMode);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModalFn(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModalFn(); });
+        });
+    </script>
+    <script>
+fetch("http://localhost:5003/api/auth")
+  .then(response => response.text())
+  .then(data => {
+    console.log("Backend response:", data);
+    alert("✅ Frontend and Backend Connected");
+  })
+  .catch(error => {
+    console.log("Error:", error);
+    alert("❌ Frontend and Backend NOT Connected");
+  });
+</script>
+
+</body>
+</html>
